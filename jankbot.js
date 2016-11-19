@@ -74,6 +74,7 @@ bot.on('logOnResponse', function() {
 
   // Initialize core modules.
   dota2.init(bot);
+  dota2.launch();
   friends.init(botFriends, CONFIG, DICT);
   admin.init(botFriends, DICT, shutdown);
   basic.init(DICT, help);

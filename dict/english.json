@@ -21,7 +21,7 @@
     "whois": "whois"
   },
 
-  "help_message" : "I'm Jankbot, here to help with your every day Dota!",
+  "help_message" : "I'm BotTom, here to help with your every day Dota!",
 
   "CMD_HELP" : {
     "lfg" : "Alert my friends that you are looking to play.",
