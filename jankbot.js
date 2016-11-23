@@ -73,11 +73,11 @@ bot.on('logOnResponse', function() {
   botFriends.setPersonaName(CONFIG.displayName);
 
   // Initialize core modules.
-  dota2.init(bot);
-  dota2.launch();
+  dota2.init(bot, CONFIG, DICT, botFriends);
   friends.init(botFriends, CONFIG, DICT);
   admin.init(botFriends, DICT, shutdown);
   basic.init(DICT, help);
+  dota2.launch();
 
   // Loop through modules can call their onBotLogin handler if provided
   for (let i = 0; i < modules.length; i++) {
@@ -145,6 +145,10 @@ botFriends.on('message', function(source, message) {
     return;
   }
 
+  if (dota2.command(source, input, original)) {
+    return;
+  }
+  
   // Finally, loop through other modules.
   for (let i = 0; i < modules.length; i++) {
     if (typeof modules[i].handle === 'function') {
@@ -192,7 +196,7 @@ botFriends.on('friend', function(steamId, type) {
 });
 
 botFriends.on('personaState', function(resp) {
-  logger.log(resp.friendid + ' is now known as ' + resp.player_name);
+  // logger.log(resp.friendid + ' is now known as ' + resp.player_name);
   friends.updateFriendName(resp.friendid, resp.player_name);
 });
 
@@ -227,6 +231,13 @@ function help(isAdmin) {
   for (let cmd in DICT.CMDS) {
     if (typeof cmd === 'string') {
       resp += cmd + ' - ' + DICT.CMD_HELP[cmd] + '\n';
+    }
+  }
+
+  // Dota 2 commands.
+  for (let cmd in DICT.DOTA2_CMDS) {
+    if (typeof cmd === 'string') {
+      resp += cmd + ' - ' + DICT.DOTA2_CMDS_HELP[cmd] + '\n';
     }
   }
 
