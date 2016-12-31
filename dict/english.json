@@ -88,16 +88,10 @@
   ],
 
   "DOTA2_CMDS" : {
-    "start" : "start",
-    "lobby" : "lobby",
-    "-cd" : "-cd",
-    "-cm" : "-cm",
-    "-ap" : "-ap",
-    "-ardm" : "-ardm"
+    "lobby" : "lobby"
   },
 
   "DOTA2_CMDS_HELP" : {
-    "start" : "Immediately starts the game",
-    "lobby" : "Returns lobby status and an invite if open"
+    "lobby" : "Returns the number of players in a lobby, and a lobby invite if there are empty slots"
   }
 }
