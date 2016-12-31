@@ -12,7 +12,7 @@ let _ = require('underscore');
 let botFriends = require('./friends.js');
 let discord = require('jankbot-discord');
 
-let password = "123";
+
 let gameState = -1;
 let gameStartTime;
 
@@ -23,7 +23,7 @@ let votes = {
   20 : 0
 };
 let voterPreferences = {};
-
+let password;
 let dota2LobbyOptions = 
 { game_name: 'BotTom IH',
   server_region: Dota2.ServerRegion.USEAST,
@@ -52,6 +52,8 @@ exports.init = function(bot, botCONFIG, botDICT) {
   CONFIG = botCONFIG;
   DICT = botDICT;
 };
+
+password = CONFIG.dota2_lobby_pw;
 
 // TODO: use inviteToLobby(steam_id)
 // TODO: kick blacklisted users
@@ -82,6 +84,7 @@ exports.launch = function() {
       });
 
       dota2.on("practiceLobbyUpdate",
+        // TODO: remove player vote for preference when they leave
         function(lobby) {
           logger.log("practiceLobbyUpdate");
           let lobbyId = lobby.lobby_id;
@@ -132,12 +135,10 @@ exports.launch = function() {
       // Chat messages
      dota2.on('chatMessage', function(channel, senderName, message, chatObject) {
        logger.log(`${senderName} said ${message} on ${channel}`);
-       // logger.log("chatMessage" + util.inspect(chatObject));
 
        let source = dota2.ToSteamID(chatObject.account_id);
-
-       logger.log('Their steamId is: ' + source);
        let preference;
+
        if (channel.indexOf(LOBBY_CHAT_PREFIX) >= 0) {
         switch (message) {
           case '!start':
@@ -145,21 +146,24 @@ exports.launch = function() {
             break;
           case '-ap':
             preference = Dota2.schema.DOTA_GameMode.DOTA_GAMEMODE_AP;
+            updateVotePreferences(source, preference);
             break;
           case '-cm':
             preference = Dota2.schema.DOTA_GameMode.DOTA_GAMEMODE_CM;
+            updateVotePreferences(source, preference);
             break;
           case '-cd':
             preference = Dota2.schema.DOTA_GameMode.DOTA_GAMEMODE_CD;
+            updateVotePreferences(source, preference);
             break;
           case '-ardm':
             preference = Dota2.schema.DOTA_GameMode.DOTA_GAMEMODE_ARDM;
+            updateVotePreferences(source, preference);
             break;
         }
-        updateVotePreferences(source, preference);
         logger.log(util.inspect(votes));
         // update gameMode
-        let gameMode = getMax(votes);
+        let gameMode = getMax(votes); // TODO: sets an undefined if something else is said...
         logger.log("chatMessage.gameMode after transform is: " + gameMode);
           switch (gameMode) {
             case '1':
